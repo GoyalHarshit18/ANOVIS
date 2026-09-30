@@ -1,0 +1,144 @@
+{
+  "project": "PS170 Burn-In Anomaly Detection",
+  "python": "3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]",
+  "scikit_learn": "1.6.1",
+  "pandas": "2.3.3",
+  "joblib": "1.5.3",
+  "files": [
+    {
+      "file": "anomaly_detection/component_24h_classifier.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "anomaly_detection/component_96h_classifier.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "anomaly_detection/fusion_96h_classifier.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "anomaly_detection/latent_specialist.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "station_detection/station_disturbance_classifier.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "station_detection/station_raw_features_ablation.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B0_IDDQ.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B0_Leakage.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B0_Delay.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B1_IDDQ.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B1_Leakage.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B1_Delay.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_Early_IDDQ.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_Early_Leakage.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_Early_Delay.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_96h_IDDQ.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_96h_Leakage.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "regression/B2_96h_Delay.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "configuration/inference_configuration.pkl",
+      "status": "saved"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_96h_Delay.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B0_IDDQ.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_Early_Delay.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B1_Delay.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_96h_IDDQ.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B1_IDDQ.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_Early_IDDQ.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B1_Leakage.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_96h_Leakage.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B0_Delay.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B2_Early_Leakage.pkl",
+      "status": "copied"
+    },
+    {
+      "file": "previous_model_artifacts/final_models/B0_Leakage.pkl",
+      "status": "copied"
+    }
+  ],
+  "missing_or_unsaved": [
+    "Previous artifact missing: pat_reference.pkl",
+    "Previous artifact missing: peer_knn.pkl",
+    "Previous artifact missing: peer_scaler.pkl",
+    "Previous artifact missing: peer_reference_targets.pkl",
+    "Previous artifact missing: peer_scales.pkl",
+    "Previous artifact missing: temporal_reference.pkl",
+    "Previous artifact missing: isolation_forest.pkl",
+    "Previous artifact missing: if_scaler.pkl",
+    "Previous artifact missing: inference_config.pkl"
+  ]
+}
