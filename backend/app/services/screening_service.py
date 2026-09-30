@@ -233,7 +233,7 @@ def screen_component(measurements: Dict[str, Any]) -> Dict[str, Any]:
     ldi = compute_ldi(a_score, prediction_risk, s_score, uncertainty_risk)
 
     # 12. Decision
-    data_available = has_0h and has_24h and registry.is_loaded("b0_models")
+    data_available = has_0h and has_24h and bool(prediction.get("available") or registry.is_loaded("b0_models"))
     decision_result = determine_decision(
         static_result=static["result"],
         a_score=a_score,

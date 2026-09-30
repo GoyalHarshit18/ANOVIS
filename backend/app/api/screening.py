@@ -159,7 +159,7 @@ async def predict_only(payload: PredictRequest):
     """Prediction-only endpoint — predicted 168h values."""
     measurements = payload.model_dump()
 
-    if not registry.is_loaded("b0_models"):
+    if not registry.get("b0_models"):
         raise HTTPException(
             status_code=503,
             detail={

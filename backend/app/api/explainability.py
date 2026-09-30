@@ -155,7 +155,7 @@ def generate_qa_report(payload: ComponentExplainRequest, db: Session = Depends(g
 
         explanation = explain_component_96h(measurements, legacy_risks=legacy_risks)
         report = generate_gemini_qa_report(explanation)
-        predictions_168h = predict_168h(measurements) if (registry.is_loaded("b0_models") or registry.is_loaded("B0_IDDQ")) else None
+        predictions_168h = predict_168h(measurements)
 
         # Generate and optionally upload PDF to Supabase Storage
         storage_url = None
@@ -226,7 +226,7 @@ def download_qa_report_pdf(component_id: str, db: Session = Depends(get_db)):
 
         explanation = explain_component_96h(measurements, legacy_risks=legacy_risks)
         gemini_report = generate_gemini_qa_report(explanation)
-        predictions_168h = predict_168h(measurements) if (registry.is_loaded("b0_models") or registry.is_loaded("B0_IDDQ")) else None
+        predictions_168h = predict_168h(measurements)
 
         pdf_bytes = generate_qa_report_pdf(explanation, gemini_report, predictions_168h)
 

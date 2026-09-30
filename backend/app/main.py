@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     logger.info("=" * 60)
 
     # Load all model artifacts ONCE
-    registry.load_all()
+    logger.info("ML models will be loaded on demand.")
 
     # Log model status summary
     report = registry.health_report()

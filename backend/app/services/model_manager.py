@@ -31,22 +31,40 @@ class ModelManager:
         self._initialized = True
 
     def load_models(self) -> Dict[str, Any]:
-        """Loads all model artifacts once and warms up initial explainers."""
-        logger.info("Initializing ModelManager: loading artifacts into memory...")
-        registry.load_all()
-        report = registry.health_report()
-        loaded = sum(1 for v in report.values() if v["status"] == "loaded")
-        logger.info("ModelManager loaded %d / %d model artifacts.", loaded, len(report))
-        return report
+        """
+        Models are loaded lazily on first inference request.
+        No heavy model is loaded during application startup.
+        """
+        logger.info(
+            "ModelManager initialized — models will be loaded on demand."
+        )
+
+        return registry.health_report()
 
     def is_ready(self) -> bool:
-        """Verifies if core production models are loaded and ready."""
-        # Core models: 96h anomaly classifier and regression models (b0_models or B0_IDDQ)
-        catboost_ready = registry.is_loaded("component_96h_classifier")
-        regression_ready = registry.is_loaded("b0_models") or (
-            registry.is_loaded("B0_IDDQ") and registry.is_loaded("B0_Leakage") and registry.is_loaded("B0_Delay")
-        )
-        return bool(catboost_ready and regression_ready)
+        """
+        The application is ready when the required production
+        model artifacts exist. Models themselves are loaded lazily
+        on the first inference request.
+        """
+        from pathlib import Path
+        from app.config import MODEL_DIR, MODEL_FILES
+
+        required_models = [
+            "component_96h_classifier",
+            "b0_models",
+        ]
+
+        for key in required_models:
+            filename = MODEL_FILES.get(key)
+
+            if not filename:
+                return False
+
+            if not (Path(MODEL_DIR) / filename).exists():
+                return False
+
+        return True
 
     def predict_anomaly(
         self,
