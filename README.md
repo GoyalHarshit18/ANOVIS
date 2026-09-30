@@ -1,365 +1,1172 @@
-# ANOVIS / BurnSight-AI
-### AI-Driven Anomaly Detection & Predictive Screening in Semiconductor Component Burn-In
+[ANOVIS Logo](./docs/assets/anovis-logo.svg)
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-19.0-61DAFB.svg?logo=react)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-6.0-646CFF.svg?logo=vite)](https://vitejs.dev)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker)](https://www.docker.com)
-[![CatBoost](https://img.shields.io/badge/CatBoost-1.2+-yellow.svg)](https://catboost.ai)
-[![SHAP](https://img.shields.io/badge/SHAP-Explainability-brightgreen.svg)](https://shap.readthedocs.io)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285F4.svg?logo=google)](https://deepmind.google/technologies/gemini/)
-[![Supabase](https://img.shields.io/badge/Supabase-Postgres_&_Storage-3ECF8E.svg?logo=supabase)](https://supabase.com)
+# ANOVIS
 
----
+**AI-Powered Semiconductor Burn-In Intelligence — Detect Anomalies, Predict 168h Degradation, Explain Every Decision**
 
-## 1. Project Overview
+SIH / Semiconductor Burn-In Reliability Platform | Team ANOVIS
 
-**Anovis (BurnSight-AI)** is an industrial-grade, AI-powered semiconductor quality assurance platform. It detects early-life component failures, predicts 168h end-of-test degradation, provides mathematical SHAP explainability, and automatically generates grounded QA inspection reports via Google Gemini AI.
-
-### Core Modules:
-- **Module 1 (Anomaly Detection & Risk Fusion)**: 96h CatBoost supervised anomaly classification combined with PAT, Peer Residuals, Early Temporal drift, and Isolation Forest scores.
-- **Module 2 (168h Predictive Analytics)**: B-Series regression models predicting `IDDQ_168h`, `Leakage_168h`, and `Delay_168h` from 0h + 24h burn-in data without data leakage.
-- **Module 3 (Explainability & Grounded QA Reports)**: Exact TreeExplainer SHAP attributions, engineering limit checks, and structured Google Gemini QA Inspector Reports with ReportLab printable PDF exports.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-Frontend-61DAFB.svg)](https://react.dev/)
+[![CatBoost](https://img.shields.io/badge/CatBoost-ML-orange.svg)](https://catboost.ai/)
+[![SHAP](https://img.shields.io/badge/SHAP-Explainability-purple.svg)](https://shap.readthedocs.io/)
+[![Gemini](https://img.shields.io/badge/Gemini-AI%20Reports-4285F4.svg)](https://ai.google.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E.svg)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Frontend-black.svg)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Render-Backend-46E3B7.svg)](https://render.com/)
 
 ---
 
-## 2. Production Deployment Architecture
+## Table of Contents
 
+- [The Problem](#the-problem)
+- [Our Solution](#our-solution)
+- [How It Works](#how-it-works)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Core Modules](#core-modules)
+- [Model Performance](#model-performance)
+- [Getting Started](#getting-started)
+- [Production Deployment](#production-deployment)
+- [API Reference](#api-reference)
+- [Project Structure](#project-structure)
+- [Team](#team)
+- [Roadmap](#roadmap)
+- [FAQ](#faq)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+---
+
+## The Problem
+
+### The Hidden Risk in Semiconductor Burn-In Testing
+
+Semiconductor burn-in testing is designed to expose components that may fail after prolonged operation. However, conventional workflows often depend on threshold-based inspection, manual analysis of measurement trajectories, and delayed failure confirmation.
+
+The challenge is not simply detecting whether a measurement is high or low.
+
+The real challenge is identifying **degradation patterns early enough to support engineering action**, predicting how a component may behave by 168 hours, and explaining why an AI system classified it as anomalous.
+
+### Key Challenges
+
+| **Challenge** | **Current Difficulty** | **Impact** |
+| --- | --- | --- |
+| **Delayed Failure Detection** | Some failures become visible only after extended burn-in | Late intervention and higher screening cost |
+| **Multi-Stage Measurements** | IDDQ, leakage and delay evolve across 0h, 24h, 96h and 168h | Difficult to interpret trajectories manually |
+| **Early Degradation** | Small changes can become significant later | Risk of missing weak failure signatures |
+| **Manual Inspection** | Engineers must compare multiple measurements and limits | Time-consuming and inconsistent |
+| **Black-Box AI** | A prediction alone does not explain the decision | Difficult for QA inspectors to trust |
+| **Future-State Uncertainty** | 168h measurements may not yet exist | Decisions must be made from earlier observations |
+
+### Why It Matters
+
+- **Reliability:** Identify components showing suspicious degradation before final burn-in completion.
+- **Predictive Maintenance:** Estimate 168h electrical characteristics from earlier observations.
+- **Quality Assurance:** Provide evidence behind an anomaly classification.
+- **Traceability:** Preserve predictions, explanations and inspection reports.
+- **Human-in-the-Loop:** AI supports QA decisions rather than replacing engineering judgment.
+
+> **ANOVIS principle:** Detect early. Predict forward. Explain every decision.
+
+---
+
+## Our Solution
+
+### ANOVIS: The AI Semiconductor Reliability Analyst
+
+ANOVIS is an **end-to-end AI platform for semiconductor burn-in screening** that combines anomaly detection, 168-hour degradation prediction and explainable AI into one workflow.
+
+Instead of producing only a binary anomaly label, ANOVIS provides:
+
+1. **96h anomaly detection**
+2. **168h IDDQ prediction**
+3. **168h Leakage prediction**
+4. **168h Propagation Delay prediction**
+5. **SHAP-based model explanation**
+6. **Gemini-powered QA inspection narrative**
+7. **Downloadable inspection reports**
+
+### Key Differentiators
+
+| **Capability** | **ANOVIS** | **Conventional Workflow** |
+| --- | --- | --- |
+| 96h anomaly detection | **AI-based** | Manual / threshold inspection |
+| 168h prediction | **IDDQ + Leakage + Delay** | Usually requires completed test |
+| Explainability | **SHAP feature attribution** | Manual interpretation |
+| QA narrative | **Gemini-assisted report** | Manually written |
+| Component-level output | **Yes** | Yes |
+| Lot-level processing | **Yes** | Depends on workflow |
+| Persistent results | **Supabase** | Often file-based |
+| Web deployment | **Vercel + Render** | Local / internal systems |
+| Human review | **Built into workflow** | Manual |
+
+---
+
+## How It Works
+
+### The 4-Stage Workflow
+
+```text
+┌──────────────────┐
+│  LOT / COMPONENT │
+│      INPUT       │
+└────────┬─────────┘
+         │
+         ▼
+┌─────────────────────────┐
+│  FEATURE ENGINEERING    │
+│  0h + 24h + 96h data    │
+└────────┬────────────────┘
+         │
+         ├─────────────────────────────┐
+         │                             │
+         ▼                             ▼
+┌──────────────────┐          ┌────────────────────┐
+│ 96h ANOMALY      │          │ 168h PREDICTION    │
+│ CATBOOST         │          │ IDDQ / LEAKAGE /   │
+│ CLASSIFIER       │          │ DELAY REGRESSORS   │
+└────────┬─────────┘          └─────────┬──────────┘
+         │                              │
+         ▼                              │
+┌──────────────────┐                    │
+│ SHAP EXPLANATION │                    │
+└────────┬─────────┘                    │
+         │                              │
+         ▼                              ▼
+┌─────────────────────────────────────────────────┐
+│              QA INSPECTION VIEW                 │
+│ Classification + Explanation + 168h Prediction  │
+└───────────────────────┬─────────────────────────┘
+                        │
+                        ▼
+               ┌────────────────┐
+               │ GEMINI REPORT  │
+               │ + PDF EXPORT   │
+               └────────────────┘
 ```
-                    +-----------------------------+
-                    |            USER             |
-                    +-----------------------------+
-                                   |
-                                   v
-                    +-----------------------------+
-                    |       VERCEL FRONTEND       |
-                    |         React + Vite        |
-                    +-----------------------------+
-                                   |
-                                   | HTTPS REST API
-                                   v
-                    +-----------------------------+
-                    |       RENDER BACKEND        |
-                    |      Dockerized FastAPI     |
-                    +-----------------------------+
-                                   |
-         +-------------------------+-------------------------+
-         |                         |                         |
-         v                         v                         v
-+-----------------+       +-----------------+       +-----------------+
-| CatBoost Models |       |      SHAP       |       |  Google Gemini  |
-|  (In-Memory)    |       | Explainability  |       |  QA Inspection  |
-+-----------------+       +-----------------+       +-----------------+
-         |                         |                         |
-         +-------------------------+-------------------------+
-                                   |
-                                   v
-                    +-----------------------------+
-                    |      SUPABASE PLATFORM      |
-                    |   PostgreSQL + File Storage |
-                    +-----------------------------+
+
+### Processing Pipeline
+
+```text
+INPUT DATA
+    │
+    ▼
+Schema Validation
+    │
+    ▼
+Feature Engineering
+    │
+    ├───────────────► 96h CatBoost Detector
+    │                         │
+    │                         ▼
+    │                    Anomaly Score
+    │                         │
+    │                         ▼
+    │                       SHAP
+    │
+    └───────────────► 168h Regression Models
+                              │
+                              ├──► IDDQ
+                              ├──► Leakage
+                              └──► Delay
+                                      │
+                                      ▼
+                              Prediction Dashboard
+                                      │
+                                      ▼
+                               Gemini QA Report
+                                      │
+                                      ▼
+                                  PDF Report
+```
+
+### Step 1: Input
+
+ANOVIS accepts component or lot-level burn-in measurements.
+
+The deployed test interface supports fields such as:
+
+- Component ID
+- Lot ID
+- Station ID
+- Device Type
+- Temperature
+- Supply Voltage
+- IDDQ at 0h / 24h / 96h
+- Leakage at 0h / 24h / 96h
+- Propagation Delay at 0h / 24h / 96h
+
+The backend validates the incoming schema before inference.
+
+### Step 2: Feature Engineering
+
+The backend reproduces the feature engineering used during model development.
+
+Examples include:
+
+- Absolute measurement changes
+- Relative changes
+- 0h → 24h drift
+- 24h → 96h drift
+- 0h → 96h drift
+- Temperature and voltage context
+
+The production feature order is controlled by the model configuration to prevent training/inference mismatch.
+
+### Step 3: 96h Anomaly Detection
+
+At 96 hours, the CatBoost classifier evaluates the component.
+
+Output:
+
+- Anomaly probability
+- Classification threshold
+- Normal / Anomaly status
+
+**ANOVIS does not use a 24h anomaly detector in the final pipeline.**
+
+The 24h measurements are used as part of the predictive feature pipeline; anomaly detection occurs at 96h.
+
+### Step 4: 168h Prediction
+
+Three independent regression models estimate the expected 168h measurements:
+
+- IDDQ
+- Leakage
+- Propagation Delay
+
+These predictions provide a forward-looking view before the final burn-in point.
+
+### Step 5: Explainability
+
+For every classification, ANOVIS can generate SHAP-based feature attribution.
+
+The system identifies:
+
+- Features pushing the model toward anomaly
+- Features pushing the model toward normal
+- Most influential measurements
+- Relevant measurement trends
+
+SHAP explains the model's decision; it does not independently prove a physical defect mechanism.
+
+### Step 6: AI-Assisted QA Report
+
+Gemini receives verified model evidence from the backend and converts it into a concise QA-oriented explanation.
+
+Gemini does **not** perform the anomaly classification.
+
+The authoritative outputs remain:
+
+- CatBoost prediction
+- Anomaly probability
+- Threshold
+- SHAP contributions
+- Measured values
+- Engineering limits
+
+### Step 7: Human Review
+
+The QA inspector receives:
+
+- Classification
+- Probability
+- Measurement summary
+- SHAP explanation
+- 168h predictions
+- AI-generated narrative
+- Recommended verification steps
+- Downloadable PDF report
+
+Final engineering disposition remains a human decision.
+
+---
+
+## Architecture
+
+### High-Level System Design
+
+```text
+┌──────────────────────────────────────────────────────────────────────┐
+│                         ANOVIS PLATFORM                              │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌───────────────┐       HTTPS        ┌───────────────────────────┐ │
+│  │    VERCEL     │ ─────────────────► │          RENDER           │ │
+│  │               │                    │                           │ │
+│  │ React + Vite  │                    │ FastAPI                   │ │
+│  │ Dashboard     │                    │                           │ │
+│  │ Charts        │                    │ ┌───────────────────────┐ │ │
+│  │ QA Reports    │                    │ │ CatBoost Models       │ │ │
+│  └───────────────┘                    │ │ • 96h Classifier      │ │ │
+│                                       │ │ • 168h IDDQ            │ │ │
+│                                       │ │ • 168h Leakage         │ │ │
+│                                       │ │ • 168h Delay           │ │ │
+│                                       │ └───────────────────────┘ │ │
+│                                       │                           │ │
+│                                       │ SHAP Explainability       │ │
+│                                       │ PDF Report Generation     │ │
+│                                       └──────────┬───────┬────────┘ │
+│                                                  │       │          │
+│                                      ┌───────────┘       └──────┐   │
+│                                      ▼                          ▼   │
+│                              ┌──────────────┐          ┌──────────┐ │
+│                              │   SUPABASE   │          │ GEMINI   │ │
+│                              │ PostgreSQL   │          │   API    │ │
+│                              │ + Storage    │          │ QA Text  │ │
+│                              └──────────────┘          └──────────┘ │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Deployment Data Flow
+
+```text
+QA Inspector
+     │
+     ▼
+Vercel React Dashboard
+     │
+     │ HTTPS
+     ▼
+Render FastAPI
+     │
+     ├──────────────► CatBoost 96h Classifier
+     │                         │
+     │                         ▼
+     │                        SHAP
+     │
+     ├──────────────► 168h IDDQ Regressor
+     ├──────────────► 168h Leakage Regressor
+     └──────────────► 168h Delay Regressor
+                               │
+                               ▼
+                         Verified Results
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+           Supabase                       Gemini API
+        Database/Storage                QA Explanation
+                │                             │
+                └──────────────┬──────────────┘
+                               ▼
+                         PDF QA Report
+```
+
+### Design Principles
+
+- **Single ML backend:** Models run inside FastAPI rather than as separate services.
+- **Secure secrets:** Gemini and Supabase service credentials stay on the backend.
+- **Persistent storage:** Supabase stores application data and reports.
+- **Stateless API:** Render instances can restart without losing persistent application data.
+- **Human-in-the-loop:** AI outputs support QA review rather than replacing it.
+- **No future leakage:** Future 168h observations are never used as inputs to the earlier prediction stage.
+
+---
+
+## Tech Stack
+
+### AI / ML Pipeline
+
+| **Technology** | **Purpose** | **Role in ANOVIS** |
+| --- | --- | --- |
+| **Python** | Core ML language | Model inference and feature engineering |
+| **CatBoost** | ML framework | Anomaly classification and regression |
+| **SHAP** | Explainable AI | Feature-level model attribution |
+| **NumPy** | Numerical computing | Feature calculations |
+| **Pandas** | Data processing | Input validation and tabular processing |
+| **Scikit-learn** | Evaluation utilities | Metrics and validation |
+
+### Machine Learning Models
+
+| **Model** | **Task** | **Output** |
+| --- | --- | --- |
+| **CatBoost Classifier** | 96h anomaly detection | Anomaly probability / status |
+| **CatBoost Regressor** | 168h IDDQ | Predicted IDDQ |
+| **CatBoost Regressor** | 168h Leakage | Predicted Leakage |
+| **CatBoost Regressor** | 168h Delay | Predicted Delay |
+
+### Backend Infrastructure
+
+| **Technology** | **Purpose** |
+| --- | --- |
+| **FastAPI** | REST API and inference service |
+| **Uvicorn / Gunicorn** | Production ASGI serving |
+| **Pydantic** | Request / response validation |
+| **Docker** | Backend packaging |
+| **Render** | Backend deployment |
+| **Gemini API** | QA explanation generation |
+
+### Frontend & Visualization
+
+| **Technology** | **Purpose** |
+| --- | --- |
+| **React** | Web application |
+| **Vite** | Frontend build tooling |
+| **JavaScript / TypeScript** | Frontend logic |
+| **Charts** | Prediction and explainability visualization |
+| **Vercel** | Frontend deployment |
+
+### Data & Storage
+
+| **Technology** | **Purpose** |
+| --- | --- |
+| **Supabase PostgreSQL** | Persistent application data |
+| **Supabase Storage** | PDF reports and persistent files |
+| **CSV** | Lot/component import and export |
+| **JSON** | API and model configuration |
+
+---
+
+## Core Modules
+
+### 1. `Anomaly Detection` — 96h CatBoost
+
+**Purpose:** Identify components showing anomalous behavior by the 96h measurement stage.
+
+**Inputs:**
+
+- 0h measurements
+- 24h measurements
+- 96h measurements
+- Engineered drift features
+- Operating context
+
+**Outputs:**
+
+- Anomaly probability
+- Classification
+- Threshold
+- QA review status
+
+**Important:**
+
+The final production workflow does not perform anomaly classification at 24h.
+
+---
+
+### 2. `168h Prediction` — Multi-Target Regression
+
+**Purpose:** Predict future 168h electrical behavior from earlier burn-in measurements.
+
+Three separate regressors are used.
+
+```text
+0h + 24h Measurements
+          │
+          ├──────────────► IDDQ Regressor ───────► 168h IDDQ
+          │
+          ├──────────────► Leakage Regressor ────► 168h Leakage
+          │
+          └──────────────► Delay Regressor ──────► 168h Delay
+```
+
+**Why separate models?**
+
+IDDQ, leakage and delay have different units, distributions and degradation behavior. Independent regressors allow each target to be modeled according to its own response characteristics.
+
+---
+
+### 3. `Explainability` — SHAP
+
+**Purpose:** Explain why the 96h classifier made its decision.
+
+**Outputs:**
+
+- Global feature importance
+- Individual component explanation
+- Positive anomaly contributors
+- Negative contributors
+- SHAP contribution values
+- Feature values
+
+**Example:**
+
+```text
+Component
+   │
+   ▼
+96h CatBoost
+   │
+   ▼
+Anomaly Probability
+   │
+   ▼
+SHAP
+   │
+   ├── IDDQ drift ─────────► anomaly evidence
+   ├── Leakage drift ──────► anomaly evidence
+   ├── Delay change ───────► normal/anomaly evidence
+   └── Voltage context ────► supporting evidence
+```
+
+SHAP values indicate model contribution, not physical causality.
+
+---
+
+### 4. `Gemini QA Assistant`
+
+**Purpose:** Convert verified model evidence into a human-readable QA explanation.
+
+Gemini receives:
+
+- Classification
+- Probability
+- SHAP contributors
+- Relevant measurements
+- Engineering limits
+- 168h predictions
+
+Gemini generates:
+
+- Executive summary
+- Classification explanation
+- Key contributing factors
+- Measurement trends
+- Engineering-limit assessment
+- Suggested inspection steps
+- Limitations
+
+The Gemini API cannot override the ML model's classification or probability.
+
+---
+
+### 5. `QA Report Generator`
+
+**Purpose:** Generate a professional inspection report.
+
+Reports include:
+
+- Component information
+- Lot information
+- 96h anomaly result
+- Measurement summary
+- SHAP chart
+- Important contributors
+- 168h predictions
+- Gemini explanation
+- QA recommendations
+- Human review section
+- Report timestamp
+
+Reports are stored using Supabase Storage.
+
+---
+
+### 6. `Lot Processing`
+
+**Purpose:** Process multiple components from a single lot.
+
+Example workflow:
+
+```text
+CSV Upload
+    │
+    ▼
+Schema Validation
+    │
+    ▼
+50 / 100 / N Components
+    │
+    ├── Component 001 ──► Prediction
+    ├── Component 002 ──► Prediction
+    ├── Component 003 ──► Prediction
+    └── ...
+    │
+    ▼
+Lot-Level Summary
+```
+
+The system can display:
+
+- Total components
+- Normal components
+- Anomalous components
+- Anomaly percentage
+- Prediction distributions
+- Components requiring QA review
+
+---
+
+## Model Performance
+
+### 96h Anomaly Detection
+
+The current development evaluation on the matched synthetic test set produced:
+
+| **Metric** | **24h Detector** | **96h Detector** |
+| --- | ---: | ---: |
+| Precision | 52.72% | **78.87%** |
+| Recall | 48.96% | **95.54%** |
+| False Positive Rate | 6.82% | **3.97%** |
+
+**Production model:** 96h detector only.
+
+The 24h detector is not part of the final production workflow.
+
+> These results were obtained on a synthetic matched test set derived from training trajectories with perturbations. They should be treated as development/prototype evaluation rather than an independent real-world benchmark.
+
+### 168h Regression
+
+The system evaluates three separate targets:
+
+| **Target** | **Prediction Stage** | **Evaluation** |
+| --- | --- | --- |
+| IDDQ | 168h | MAE / R² |
+| Leakage | 168h | MAE / R² |
+| Propagation Delay | 168h | MAE / R² |
+
+The project generates actual-vs-predicted plots for each target.
+
+Because the current evaluation data is synthetic/matched, regression results should be interpreted as prototype validation rather than evidence of field performance.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+- npm
+- Git
+- Docker (recommended for backend deployment)
+- Supabase project for persistent storage
+- Gemini API key for AI-generated QA reports
+
+No GPU is required for the deployed CPU inference architecture if the selected Render instance has sufficient memory for the model artifacts.
+
+### Clone the Repository
+
+```bash
+git clone <YOUR_REPOSITORY_URL>
+cd ANOVIS
+```
+
+### Backend Setup
+
+```bash
+cd backend
+
+python -m venv venv
+```
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / macOS:
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Create environment file:
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configure:
+
+```env
+ENVIRONMENT=development
+
+FRONTEND_URL=http://localhost:5173
+
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+DATABASE_URL=your_database_url
+
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your_supported_gemini_model
+
+MODEL_DIR=./models
+```
+
+### Start Backend
+
+Use the actual FastAPI module path configured in the repository.
+
+Typical development command:
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+Backend:
+
+```text
+http://localhost:8000
+```
+
+Swagger:
+
+```text
+http://localhost:8000/docs
+```
+
+Health check:
+
+```text
+http://localhost:8000/health
 ```
 
 ---
 
-## 3. Technology Stack
+## Frontend Setup
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| **Frontend** | React 19, Vite, TailwindCSS / Vanilla CSS, Lucide Icons, Recharts | Interactive inspector dashboard, real-time charts |
-| **Backend API** | FastAPI, Uvicorn, Gunicorn | High-performance asynchronous REST API |
-| **ML Inference** | CatBoost, Scikit-learn, Joblib, NumPy, Pandas | 96h anomaly classification & 168h regression (in-memory) |
-| **Explainability** | SHAP (TreeExplainer) | Exact probability attribution & feature contribution |
-| **AI Narrative** | Google Gemini API (`google-genai` SDK) | Grounded, non-hallucinated QA inspection reports |
-| **Database** | Supabase PostgreSQL | Relational storage for runs, components, results, and audit trails |
-| **File Storage** | Supabase Storage | Persistent storage for generated PDF reports |
-| **Containerization** | Docker (Python 3.11-slim) | Container image for Render Web Service |
+```bash
+cd frontend
+npm install
+```
+
+Create:
+
+```text
+frontend/.env.local
+```
+
+Add:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+Start:
+
+```bash
+npm run dev
+```
+
+Open the URL displayed by Vite, typically:
+
+```text
+http://localhost:5173
+```
 
 ---
 
-## 4. Repository Structure
+## Production Deployment
 
+### Deployment Architecture
+
+```text
+Frontend
+   │
+   ▼
+Vercel
+React + Vite
+   │
+   │ HTTPS
+   ▼
+Render
+FastAPI + CatBoost + SHAP
+   │
+   ├────► Supabase PostgreSQL
+   │
+   ├────► Supabase Storage
+   │
+   └────► Gemini API
 ```
-ps170/
+
+### 1. Supabase
+
+Create a Supabase project.
+
+Configure:
+
+- PostgreSQL database
+- Required application tables
+- Storage bucket for reports
+- Appropriate access policies
+
+Backend-only secret:
+
+```env
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+Never expose this key to the frontend.
+
+### 2. Render
+
+Deploy the `backend/` service as a Dockerized Web Service.
+
+Configure:
+
+```text
+Root Directory: backend
+```
+
+Use the repository's Dockerfile.
+
+The backend must listen on Render's `$PORT`.
+
+Set environment variables:
+
+```env
+DATABASE_URL=...
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+GEMINI_API_KEY=...
+GEMINI_MODEL=...
+
+FRONTEND_URL=https://your-project.vercel.app
+
+ENVIRONMENT=production
+```
+
+Verify:
+
+```text
+https://your-backend.onrender.com/health
+```
+
+### 3. Vercel
+
+Deploy:
+
+```text
+frontend/
+```
+
+Use:
+
+```text
+Framework: Vite
+Build Command: npm run build
+Output Directory: dist
+```
+
+Set:
+
+```env
+VITE_API_BASE_URL=https://your-backend.onrender.com
+```
+
+Do NOT add:
+
+```text
+GEMINI_API_KEY
+SUPABASE_SERVICE_ROLE_KEY
+DATABASE_URL
+```
+
+to Vercel frontend environment variables.
+
+### 4. Final Production Test
+
+Verify:
+
+- Frontend loads
+- Backend health endpoint works
+- Lot CSV upload works
+- 96h anomaly detection works
+- 168h prediction works
+- SHAP explanation works
+- Gemini explanation works
+- PDF report works
+- Supabase persistence works
+- CORS works
+- No secrets are exposed
+
+---
+
+## API Reference
+
+### REST API
+
+| **Method** | **Endpoint** | **Description** |
+| --- | --- | --- |
+| `GET` | `/health` | Backend health |
+| `GET` | `/health/ready` | Model/service readiness |
+| `POST` | `/api/predict` | Run anomaly + 168h predictions |
+| `POST` | `/api/explainability/component` | Explain a component |
+| `GET` | `/api/explainability/global` | Global SHAP importance |
+| `POST` | `/api/reports/qa` | Generate QA report |
+| `GET` | `/api/reports/qa/{report_id}/pdf` | Download PDF |
+
+Actual endpoint names should follow the implementation in the deployed backend.
+
+### Example Prediction Request
+
+```json
+{
+  "component_id": "TEST-COMP-001",
+  "lot_id": "TEST-LOT-001",
+  "station_id": "STATION-01",
+  "device_type": "TYPE-A",
+  "temperature": 25.1,
+  "voltage": 1.2,
+  "iddq_ua_0h": 42.1,
+  "iddq_ua_24h": 44.3,
+  "iddq_ua_96h": 48.7,
+  "leakage_na_0h": 8.1,
+  "leakage_na_24h": 8.6,
+  "leakage_na_96h": 9.4,
+  "prop_delay_ns_0h": 2.01,
+  "prop_delay_ns_24h": 2.03,
+  "prop_delay_ns_96h": 2.07
+}
+```
+
+### Example Response
+
+```json
+{
+  "component_id": "TEST-COMP-001",
+  "lot_id": "TEST-LOT-001",
+  "anomaly_probability_96h": 0.08,
+  "anomaly_status_96h": "NORMAL",
+  "predicted_iddq_168h": 52.1,
+  "predicted_leakage_168h": 10.2,
+  "predicted_delay_168h": 2.11
+}
+```
+
+Example values above are illustrative.
+
+---
+
+## Project Structure
+
+```text
+ANOVIS/
 │
-├── frontend/                     # Vercel React + Vite Frontend
-│   ├── src/
-│   │   ├── components/           # UI components, layout, header, sidebar
-│   │   ├── pages/                # Dashboard, Anomaly, PredictiveAnalysis, Explainability, etc.
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── api/
 │   │   ├── services/
-│   │   │   └── apiService.js     # Centralized API client using VITE_API_BASE_URL
-│   │   └── data/                 # Sample data & test fallbacks
+│   │   │   ├── inference.py
+│   │   │   ├── shap_explainer.py
+│   │   │   ├── gemini_service.py
+│   │   │   └── report_service.py
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   └── db/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── .dockerignore
+│
+├── frontend/
+│   ├── src/
 │   ├── public/
 │   ├── package.json
-│   ├── vite.config.js
-│   ├── vercel.json               # SPA routing rewrite configuration for Vercel
-│   └── .env.example
+│   └── vite.config.*
 │
-├── backend/                      # Render Dockerized FastAPI Backend
-│   ├── app/
-│   │   ├── main.py               # FastAPI entry point & lifespan model loading
-│   │   ├── config.py             # App configuration, CORS, environment variables
-│   │   ├── api/                  # API route definitions (/health, /predict, /explainability, etc.)
-│   │   ├── services/
-│   │   │   ├── model_manager.py  # In-memory ModelManager singleton
-│   │   │   ├── explainability_service.py # SHAP calculation & global rankings
-│   │   │   ├── gemini_service.py # Google Gemini QA report generator & fallback
-│   │   │   ├── pdf_service.py    # ReportLab printable PDF generator
-│   │   │   ├── supabase_storage_service.py # Supabase storage uploader
-│   │   │   └── ...
-│   │   ├── ml/                   # Model registry, prediction engine, risk fusion
-│   │   ├── inference/            # Feature vector builders & contract validators
-│   │   ├── db/                   # SQLAlchemy PostgreSQL models & database session
-│   │   └── schemas/              # Pydantic input & output validation schemas
-│   ├── models/                   # Packaged ML model artifacts (.pkl)
-│   ├── Dockerfile                # Production Dockerfile
-│   ├── .dockerignore
-│   ├── requirements.txt          # Python production dependencies
-│   ├── smoke_test.py             # Automated 10-point deployment smoke test
-│   └── .env.example
+├── models_extracted/
+├── models_extracted_py/
 │
 ├── docs/
-│   └── database_schema.sql       # Production Supabase PostgreSQL schema & indexes
+│   ├── architecture/
+│   ├── reports/
+│   └── assets/
 │
-├── .gitignore
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 5. Machine Learning Models & In-Memory Strategy
+## Team
 
-All ML models run **inside** the FastAPI process. Models are loaded **once** at server startup via FastAPI `lifespan` and held in memory to ensure sub-100ms inference times.
+### Team ANOVIS
 
-| Model ID | File Name | Size | Target / Function |
-|---|---|---|---|
-| **Model 1** | `component_96h_classifier.pkl` | ~10.8 MB | 96h CatBoost Supervised Anomaly Classifier |
-| **Model 2** | `B0_IDDQ.pkl` | ~137 KB | 168h IDDQ Regressor ($\mu\text{A}$) |
-| **Model 3** | `B0_Leakage.pkl` | ~113 KB | 168h Leakage Regressor ($\text{nA}$) |
-| **Model 4** | `B0_Delay.pkl` | ~201 KB | 168h Propagation Delay Regressor ($\text{ns}$) |
-| **Specialists** | `latent_specialist.pkl`, `station_disturbance_classifier.pkl`, `isolation_forest.pkl`, `fusion_96h_classifier.pkl` | ~12 MB total | Outlier & drift specialist models |
+| **Member** | **Role** | **Responsibilities** |
+| --- | --- | --- |
+| **Team Leader** | System Architecture | Overall coordination and integration |
+| **ML Engineer** | Machine Learning | Anomaly detection and 168h prediction |
+| **GenAI Engineer** | Explainability | SHAP + Gemini QA reporting |
+| **Frontend / Backend Engineer** | Full Stack | Dashboard, APIs and deployment |
 
----
+> Update the member names and exact responsibilities here according to the final team composition before publishing the repository.
 
-## 6. Environment Variables
+### Team Philosophy
 
-### Render Backend (`backend/.env` / Render Dashboard):
-```env
-# Server
-PORT=8000
-API_HOST=0.0.0.0
-ENVIRONMENT=production
-LOG_LEVEL=INFO
+We believe in:
 
-# CORS (Set to your deployed Vercel domain)
-FRONTEND_URL=https://your-frontend-app.vercel.app
-CORS_ORIGINS=http://localhost:5173,http://localhost:3000
-
-# Models
-MODEL_DIR=./models
-
-# Supabase PostgreSQL (Connection Pooler URL)
-DATABASE_URL=postgresql+psycopg2://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
-
-# Supabase Storage & Service Key (Backend ONLY - NEVER in frontend)
-SUPABASE_URL=https://[ref].supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJh...
-SUPABASE_STORAGE_BUCKET=qa-reports
-
-# Google Gemini API (Backend ONLY - NEVER in frontend)
-GEMINI_API_KEY=AIzaSy...
-GEMINI_MODEL=gemini-3.5-flash-lite
-```
-
-### Vercel Frontend (`frontend/.env` / Vercel Project Settings):
-```env
-# Render Backend Base URL (NO trailing slash)
-VITE_API_BASE_URL=https://your-backend.onrender.com
-```
-
-> [!CAUTION]
-> **Security Guardrail**: Never put `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, or `GEMINI_API_KEY` into frontend environment variables (`VITE_*`).
+- **Explainable AI:** Every important AI decision should have understandable evidence.
+- **Predictive Reliability:** Detect risk before final failure confirmation where the available data supports it.
+- **Human-in-the-Loop QA:** AI assists engineers; it does not replace authorized engineering decisions.
+- **Reproducible ML:** Training and production inference must use consistent feature definitions.
+- **Deployment First:** Models should work as part of a complete usable system, not only inside notebooks.
 
 ---
 
-## 7. Production API Endpoints
+## Roadmap
 
-### Health & Readiness Probes
-- `GET /health`: Returns basic and detailed health status (`{"status": "ok", "service": "...", "database": "Connected", "models_ready": true}`).
-- `GET /health/ready`: Readiness probe for container orchestrators. Returns HTTP 200 when all models are loaded and operational; returns HTTP 503 if models fail to load.
+### Phase 1: Hackathon MVP — Current
 
-### Core Inference & Explainability
-- `POST /api/predict`: Production unified inference endpoint.
-  - **Input**: Component measurements (0h, 24h, 96h).
-  - **Output**:
-    ```json
-    {
-      "component_id": "CMP-2026-001",
-      "lot_id": "LOT-2026-091",
-      "anomaly_probability_96h": 0.0412,
-      "anomaly_status_96h": "NORMAL",
-      "predicted_iddq_168h": 1.45,
-      "predicted_leakage_168h": 5.82,
-      "predicted_delay_168h": 1.10,
-      "threshold": 0.50,
-      "model_version": "catboost-96h-v1.0"
-    }
-    ```
-- `POST /api/explainability/component`: Returns exact SHAP attributions, mathematical base value reconstruction, positive/negative risk contributors, and engineering limit assessments.
-- `GET /api/explainability/global`: Returns dataset-wide feature importance ranking and mean absolute SHAP attributions.
-- `POST /api/reports/qa`: Generates a Google Gemini QA Inspection report strictly grounded in model evidence with fallback protection.
-- `GET /api/reports/qa/{component_id}/pdf`: Streams and downloads a printable ReportLab QA report with inspector sign-off section.
+- 96h anomaly detection
+- 168h IDDQ prediction
+- 168h Leakage prediction
+- 168h Delay prediction
+- SHAP explainability
+- Gemini-assisted QA reports
+- Lot-level processing
+- Web dashboard
+- PDF report generation
 
-### Screening & Batch Ingestion
-- `POST /screen`: Single-component full risk-fusion pipeline.
-- `POST /upload`: CSV dataset upload and schema validation.
-- `POST /screening-runs/{run_id}/module-a`: Executes PAT, Peer, Temporal, and Isolation Forest analysis.
-- `POST /screening-runs/{run_id}/anomaly-analysis`: Evaluates Device, Lot, and Station origin status.
-- `POST /screening-runs/{run_id}/module-b`: Runs B0, B1, B2 predictive models.
-- `POST /screening-runs/{run_id}/risk-fusion`: Computes final LDI, A-Score, S-Score, and disposition decision.
+### Phase 2: Production Hardening
 
----
+- Authentication
+- Role-based QA access
+- Improved batch processing
+- Background jobs
+- Audit logging
+- Model version management
+- Automated CI/CD
+- Expanded automated tests
 
-## 8. Step-by-Step Deployment Guide
+### Phase 3: Industrial Integration
 
-### STEP 1: Supabase Project Setup
-1. Create a project at [supabase.com](https://supabase.com).
-2. Under **Project Settings > Database**, copy your `Connection string` (URI mode, Transaction / Session pooler).
-3. Under **Project Settings > API**, copy the `Project URL` and `service_role key` (secret).
-4. Open the **SQL Editor** in Supabase and run [`docs/database_schema.sql`](file:///c:/Users/Harsh/OneDrive/Desktop/ps170/docs/database_schema.sql) to create all tables and indexes.
-5. In **Storage**, create a new bucket named `qa-reports` (Public or authenticated read).
+- MES integration
+- LIMS integration
+- Automated tester-data ingestion
+- Historical lot analytics
+- QA workflow integration
+- Equipment and station monitoring
 
-### STEP 2: Deploy Backend to Render
-1. In [render.com](https://render.com), click **New > Web Service**.
-2. Connect your GitHub repository.
-3. Configure the service:
-   - **Name**: `anovis-backend`
-   - **Root Directory**: `backend`
-   - **Runtime**: `Docker`
-   - **Dockerfile Path**: `Dockerfile`
-   - **Instance Type**: Starter / Standard (1 GB+ RAM recommended for ML models)
-4. Under **Environment Variables**, configure:
-   - `ENVIRONMENT` = `production`
-   - `DATABASE_URL` = (Your Supabase PostgreSQL URI)
-   - `SUPABASE_URL` = (Your Supabase Project URL)
-   - `SUPABASE_SERVICE_ROLE_KEY` = (Your Supabase Secret Service Role Key)
-   - `SUPABASE_STORAGE_BUCKET` = `qa-reports`
-   - `GEMINI_API_KEY` = (Your Google Gemini API Key)
-   - `GEMINI_MODEL` = `gemini-3.5-flash-lite`
-   - `FRONTEND_URL` = `https://your-frontend.vercel.app`
-5. Click **Deploy Web Service**.
-6. Once deployed, verify:
-   - `https://your-backend.onrender.com/health` -> `{"status": "ok"}`
-   - `https://your-backend.onrender.com/health/ready` -> `{"status": "ready"}`
+### Phase 4: Advanced Reliability Intelligence
 
-### STEP 3: Deploy Frontend to Vercel
-1. In [vercel.com](https://vercel.com), click **Add New > Project**.
-2. Import your GitHub repository.
-3. Configure the project:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-4. Under **Environment Variables**, add:
-   - `VITE_API_BASE_URL` = `https://your-backend.onrender.com`
-5. Click **Deploy**.
-6. Update the `FRONTEND_URL` in your Render backend settings with your actual Vercel URL (e.g. `https://anovis.vercel.app`).
+- Online drift monitoring
+- Model monitoring
+- Champion/challenger models
+- Uncertainty estimation
+- Failure-mode analytics
+- Cross-lot pattern discovery
+- Digital reliability knowledge base
+
+### Long-Term Vision
+
+Build an explainable semiconductor reliability intelligence platform that helps engineering teams move from **reactive screening to predictive, evidence-based quality decisions**.
 
 ---
 
-## 9. Local Development & Testing
+## FAQ
 
-### Backend Setup:
-```bash
-# 1. Navigate to backend
-cd backend
+### General
 
-# 2. Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+**Q: What does ANOVIS detect?**
 
-# 3. Install dependencies
-pip install -r requirements.txt
+A: ANOVIS uses a CatBoost classifier to detect anomalous semiconductor behavior at the 96-hour stage using the available burn-in measurements and engineered features.
 
-# 4. Configure local environment
-cp .env.example .env
+**Q: Does ANOVIS detect anomalies at 24 hours?**
 
-# 5. Run tests
-pytest
+A: No. The final production workflow uses 24-hour measurements as predictive context but performs anomaly classification at 96 hours.
 
-# 6. Run automated smoke test
-python smoke_test.py
+**Q: What does ANOVIS predict at 168 hours?**
 
-# 7. Start FastAPI server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+A: Three regression models predict IDDQ, Leakage and Propagation Delay at 168 hours.
 
-### Frontend Setup:
-```bash
-# 1. Navigate to frontend
-cd frontend
+**Q: Does the system replace QA engineers?**
 
-# 2. Install dependencies
-npm install
+A: No. The system provides model evidence, explanations and recommendations to support human QA inspection.
 
-# 3. Test production build
-npm run build
+### Explainability
 
-# 4. Start development server
-npm run dev
+**Q: Why use SHAP?**
+
+A: SHAP provides feature-level attribution showing which inputs contributed to the model's prediction and in which direction.
+
+**Q: Does SHAP identify the physical root cause?**
+
+A: No. SHAP explains the behavior of the predictive model. It should not be interpreted as proof of a physical defect mechanism.
+
+**Q: Why use Gemini?**
+
+A: Gemini converts verified model evidence into a concise, human-readable QA explanation. Gemini does not determine the anomaly classification.
+
+### Deployment
+
+**Q: Where are the ML models deployed?**
+
+A: The CatBoost models run inside the FastAPI backend deployed on Render. A separate ML-serving deployment is not required for the current architecture.
+
+**Q: Where is the frontend deployed?**
+
+A: The React/Vite frontend is deployed on Vercel.
+
+**Q: Where is data stored?**
+
+A: Supabase PostgreSQL stores persistent application data, while Supabase Storage is used for persistent files such as generated reports.
+
+**Q: Is the Gemini API key exposed to the browser?**
+
+A: No. Gemini is called only from the backend. The API key is stored as a backend environment variable.
+
+### Data & Evaluation
+
+**Q: Are the current model metrics production guarantees?**
+
+A: No. Current development metrics include evaluation on a synthetic matched test set derived from training trajectories. Independent real-world validation is required before production claims.
+
+**Q: Can the system process a complete lot?**
+
+A: Yes. The application supports lot/component-level processing and can return component-level predictions and lot-level summaries.
+
+---
+
+## Acknowledgments
+
+### Open Source Libraries
+
+- [CatBoost](https://catboost.ai/) — Gradient boosting and model inference
+- [SHAP](https://shap.readthedocs.io/) — Model explainability
+- [FastAPI](https://fastapi.tiangolo.com/) — Backend API framework
+- [React](https://react.dev/) — Frontend framework
+- [Vite](https://vite.dev/) — Frontend tooling
+- [Pandas](https://pandas.pydata.org/) — Data processing
+- [NumPy](https://numpy.org/) — Numerical computing
+- [Scikit-learn](https://scikit-learn.org/) — ML utilities
+
+### Platform Services
+
+- [Supabase](https://supabase.com/) — PostgreSQL and object storage
+- [Vercel](https://vercel.com/) — Frontend deployment
+- [Render](https://render.com/) — Backend deployment
+- [Google Gemini](https://ai.google.dev/) — AI-assisted QA report generation
+
+---
+
+## License
+
+MIT License
+
+```text
+Copyright (c) 2026 Team ANOVIS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, subject to the conditions of the MIT License.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 ```
 
 ---
 
-## 10. Smoke Test Verification
+**ANOVIS** — *Detect degradation. Predict reliability. Explain every decision.*
 
-Run the automated smoke test suite to verify the entire end-to-end pipeline:
-```bash
-cd backend
-python smoke_test.py
-```
-**Expected Output:**
-```
-======================================================================
-[STARTING ANOVIS PRODUCTION DEPLOYMENT SMOKE TEST]
-======================================================================
-[TEST 1] Checking GET /health ...
-  [PASS] /health OK: status=ok, api=Operational, db=Connected
-[TEST 2] Checking GET /health/ready ...
-  [PASS] /health/ready OK: models_ready=True
-[TEST 3] Verifying in-memory ModelManager & Artifacts ...
-  [PASS] ModelManager ready: CatBoost 96h Anomaly Classifier v1.0 & B-Series 168h Parameter Regressors v1.0
-[TEST 4] Verifying Feature Order & Contract Consistency ...
-  [PASS] Feature contracts verified: 96h features = 43, B0 features = 6
-[TEST 5] Testing POST /api/predict (96h Anomaly + 168h Regressors) ...
-  [PASS] POST /api/predict OK:
-    - Component: CMP-SMOKE-2026-001 (Lot: LOT-PROD-TEST)
-    - 96h Anomaly Probability: 0.9791 -> Status: ANOMALY
-    - Predicted 168h IDDQ: 8.8976 uA
-    - Predicted 168h Leakage: 366.7027 nA
-    - Predicted 168h Delay: 2.9998 ns
-[TEST 6] Testing POST /api/explainability/component ...
-  [PASS] SHAP Explainability OK:
-    - Base Value: 0.5, Reconstructed: 0.9692
-    - Top Risk Contributor: IDDQ_relative_24_96 (SHAP: +0.065951)
-[TEST 7] Testing GET /api/explainability/global ...
-  [PASS] Global SHAP OK: Top feature = IDDQ_relative_24_96 (9.77%)
-[TEST 8] Testing POST /api/reports/qa ...
-  [PASS] QA Report OK (Source: GOOGLE_GEMINI_AI (gemini-3.5-flash-lite))
-[TEST 9] Testing GET /api/reports/qa/{component_id}/pdf ...
-  [PASS] Printable PDF Report generated successfully: 6625 bytes
-[TEST 10] Testing non-regression of POST /screen ...
-  [PASS] /screen non-regression OK: decision=REJECT, a_score=100.0
-
-======================================================================
-SUCCESS: ALL 10 PRODUCTION SMOKE TESTS PASSED WITH ZERO ERRORS!
-======================================================================
-```
-
----
-
-## 11. Disclaimer
-
-> **Quality Assurance & Safety Notice**: AI-generated explanations, predictions, and reports support quality inspection and do not independently establish a physical defect cause. Final disposition requires authorized QA review and compliance with applicable semiconductor reliability standards.
+*Built for intelligent semiconductor quality assurance.*
